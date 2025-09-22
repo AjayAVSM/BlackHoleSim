@@ -5,3 +5,19 @@
 /Builds/ 
 /Logs/ 
 /UserSettings/ 
+# Ignore Visual Studio and Unity junk
+.vs/
+Library/
+Temp/
+obj/
+Logs/
+MemoryCaptures/
+Builds/
+*.user
+*.csproj
+*.sln
+*.unityproj
+*.pidb
+*.svd
+*.pdb
+*.opendb
