@@ -1,6 +1,12 @@
+// Fragment shader for black hole visualization.
+// Simulates gravitational lensing by raymarching through a warped sphere,
+// samples and colors the accretion disc texture with Doppler + hue shifts,
+// blends distorted background with disc color, and masks the black hole core.
+
+
 Shader "KelvinvanHoorn/SMBH"
 {
-    Properties
+    Properties //declaring inputs and sliders (like as an UI)
     {
         _DiscWidth ("Width of the accretion disc", float) = 0.1
         _DiscOuterRadius ("Object relative outer disc radius", Range(0,1)) = 1
@@ -17,28 +23,29 @@ Shader "KelvinvanHoorn/SMBH"
         _GConst ("Gravitational constant", float) = 0.15
 
     }
-    SubShader
+    SubShader //defines how Unity renders the black hole
     {
-        Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalRenderPipeline" "Queue" = "Transparent" }
-        Cull Front
+        Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalRenderPipeline" "Queue" = "Transparent" } //Explains it's a transparent object, works with URP and should be drawn in transparent rendering queue
+        Cull Front //renders inside (back) of the sphere instead of front
 
-        Pass
+        Pass //Defines one rendering pass (one drawing step the GPU does)
         {
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+            HLSLPROGRAM //declaring that we are writing HLSL here
+            #pragma vertex vert //use function called vert as the vertex shader
+            #pragma fragment frag //use function called frag as the fragment shader
 
+            //including helper  for HLSL
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
 
-            static const float maxFloat = 3.402823466e+38;
+            static const float maxFloat = 3.402823466e+38; //using large number as infinty
 
-            struct Attributes
+            struct Attributes //info that we get from the mesh
             {
                 float4 posOS    : POSITION;
             };
 
-            struct v2f
+            struct v2f //"vertex to fragment" - info we pass along from vertex shader to fragment shader
             {
                 float4 posCS        : SV_POSITION;
                 float3 posWS        : TEXCOORD0;
@@ -47,7 +54,7 @@ Shader "KelvinvanHoorn/SMBH"
                 float3 objectScale  : TEXCOORD2;
             };
 
-            //vert function
+            //vertex shader, renders vertexes of the shader (place the coreners of the shape correctly + pack data for fragment shader)
             v2f vert(Attributes IN)
             {
                 v2f OUT = (v2f)0;
@@ -65,6 +72,8 @@ Shader "KelvinvanHoorn/SMBH"
 
                 return OUT;
             }
+
+            //converting the properties into actual variables the system can use
             float _DiscWidth;
             float _DiscOuterRadius;
             float _DiscInnerRadius;
@@ -81,7 +90,16 @@ Shader "KelvinvanHoorn/SMBH"
             float _SSRadius;
             float _GConst;
 
-            //Function to intersect the sphere
+            // ---------- Geometry Intersection Helpers ----------
+            // These functions shoot a ray at idealized shapes and return where (if at all) they intersect.
+            // They don’t draw anything by themselves — they’re just math tools for the fragment shader.
+            // Why we have each:
+            //   Sphere   -> black hole event horizon (solid sphere)
+            //   Plane    -> reference plane (e.g. accretion disk base)
+            //   Cylinder -> vertical walls (used with disks to give the accretion disk thickness)
+            //   Disk     -> flat finite ring (accretion disk’s main glowing surface)
+
+            //Function to intersect the sphere - black hole event horizon
             float2 intersectSphere(float3 rayOrigin, float3 rayDir, float3 centre, float radius) {
 
                 float3 offset = rayOrigin - centre;
@@ -197,12 +215,12 @@ Shader "KelvinvanHoorn/SMBH"
                 return discDst;
             }
 
-            //remap function
+            //remap function - (example: turn [1.3,3.0] to [0,1])
             float remap(float v, float minOld, float maxOld, float minNew, float maxNew) {
                 return minNew + (v - minOld) * (maxNew - minNew) / (maxOld - minOld);
             }
 
-            //discUV function
+            //discUV function - makes texture mapping and color effects possible by converting 3D points to uv coordinates
             float2 discUV(float3 planarDiscPos, float3 discDir, float3 centre, float radius)
             {
                 float3 planarDiscPosNorm = normalize(planarDiscPos);
@@ -224,6 +242,13 @@ Shader "KelvinvanHoorn/SMBH"
 
                 return float2(u,v);
             }
+
+            // ---------- Color Utility Functions ----------
+            // Helpers for color space conversion and adjustments:
+            //   - LinearToGamma / GammaToLinear: keep colors consistent across Unity color spaces
+            //   - hdrIntensity: apply HDR-style brightness/exposure to emissive colors
+            //   - RGBToHSV / HSVToRGB: convert between RGB and HSV for hue-shifting effects (e.g. Doppler)
+
 
             // Based upon UnityCG.cginc, used in hdrIntensity
             float3 LinearToGammaSpace (float3 linRGB)
@@ -276,7 +301,7 @@ Shader "KelvinvanHoorn/SMBH"
                 return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
             }
 
-            // Based upon Unity's shadergraph library functions
+            // Helper function to make Doppler beaming work
             float3 RotateAboutAxis(float3 In, float3 Axis, float Rotation)
             {
                 float s = sin(Rotation);
@@ -292,6 +317,7 @@ Shader "KelvinvanHoorn/SMBH"
                 return mul(rot_mat,  In);
             }
 
+            // Function to give effects to the accretion disk
             float3 discColor(float3 baseColor, float3 planarDiscPos, float3 discDir, float3 cameraPos, float u, float radius)
             {
                 float3 newColor = baseColor;
@@ -316,97 +342,98 @@ Shader "KelvinvanHoorn/SMBH"
                 return newColor;
             }
             
-            //frag function
+            //frag function - renders each pixel
             float4 frag (v2f IN) : SV_Target
             {
-                float3 rayOrigin = _WorldSpaceCameraPos;
-                float3 rayDir = normalize(IN.posWS - _WorldSpaceCameraPos);
+                float3 rayOrigin = _WorldSpaceCameraPos; // Set Ray's Origin as the camera position'
+                float3 rayDir = normalize(IN.posWS - _WorldSpaceCameraPos); // Set Ray direction as from camera to current pixel's world position'
             
-                float sphereRadius = 0.5 * min(min(IN.objectScale.x, IN.objectScale.y), IN.objectScale.z);
-                float2 outerSphereIntersection = intersectSphere(rayOrigin, rayDir, IN.centre, sphereRadius);
+                float sphereRadius = 0.5 * min(min(IN.objectScale.x, IN.objectScale.y), IN.objectScale.z); //takes the object’s scale in X, Y, Z, picks the smallest (so it’s still round), halves it (radius).
+                float2 outerSphereIntersection = intersectSphere(rayOrigin, rayDir, IN.centre, sphereRadius); //Calls intersectSphere to check if the ray hits the black hole sphere and where?
 
                 // Disc information, direction is objects rotation
-                float3 discDir = normalize(mul(unity_ObjectToWorld, float4(0,1,0,0)).xyz);
-                float3 p1 = IN.centre - 0.5 * _DiscWidth * discDir;
-                float3 p2 = IN.centre + 0.5 * _DiscWidth * discDir;
-                float discRadius = sphereRadius * _DiscOuterRadius;
-                float innerRadius = sphereRadius * _DiscInnerRadius;
+                float3 discDir = normalize(mul(unity_ObjectToWorld, float4(0,1,0,0)).xyz); //figure out which way the disk is pointing in world space
+                float3 p1 = IN.centre - 0.5 * _DiscWidth * discDir; //cap disk thickness in the bottom
+                float3 p2 = IN.centre + 0.5 * _DiscWidth * discDir; //cap disk thickness in the top
+                float discRadius = sphereRadius * _DiscOuterRadius; //calculates relative outer radius to the sphere
+                float innerRadius = sphereRadius * _DiscInnerRadius; //calculates relative inner radius to the sphere
 
 
                 // Raymarching information
-                float transmittance = 0;
-                float blackHoleMask = 0;
-                float3 samplePos = float3(maxFloat, 0, 0);
-                float3 currentRayPos = rayOrigin + rayDir * outerSphereIntersection.x;
-                float3 currentRayDir = rayDir;
+                float transmittance = 0; // how much light makes it through (0 = none, 1 = full)
+                float blackHoleMask = 0; // mask value for rendering the black hole core
+                float3 samplePos = float3(maxFloat, 0, 0); // placeholder position for a raymarch sample (set far away initially)
+                float3 currentRayPos = rayOrigin + rayDir * outerSphereIntersection.x; // starting point: where the ray first hits the outer sphere boundary
+                float3 currentRayDir = rayDir; // direction of the ray through space (normalized earlier)
             
                 // Ray intersects with the outer sphere
-                if(outerSphereIntersection.x < maxFloat)
+                if(outerSphereIntersection.x < maxFloat) //if outer ray intersects the outer sphere
                 {
-                    for (int i = 0; i < _Steps; i++)
+                    for (int i = 0; i < _Steps; i++) //start raymarch loop
                     {
-                        float3 dirToCentre = IN.centre-currentRayPos;
-                        float dstToCentre = length(dirToCentre);
-                        dirToCentre /= dstToCentre;
+                        float3 dirToCentre = IN.centre-currentRayPos; //vector pointing to BH centre
+                        float dstToCentre = length(dirToCentre); //distance to BH centre
+                        dirToCentre /= dstToCentre; //normalize to get direction only
 
-                        if(dstToCentre > sphereRadius + _StepSize)
+                        if(dstToCentre > sphereRadius + _StepSize) //if ray left bounding sphere end loop
                         {
                             break;
                         }
 
-                        float force = _GConst/(dstToCentre*dstToCentre);
-                        currentRayDir = normalize(currentRayDir + dirToCentre * force * _StepSize);
-                        // Move ray forward
-                        currentRayPos += currentRayDir * _StepSize;
+                        float force = _GConst/(dstToCentre*dstToCentre); // simplfied gravity strength
+                        currentRayDir = normalize(currentRayDir + dirToCentre * force * _StepSize); //bend ray towards BH
+                        currentRayPos += currentRayDir * _StepSize; //move ray forward
 
+                        // Check if ray falls into black hole
                         float blackHoleDistance = intersectSphere(currentRayPos, currentRayDir, IN.centre, _SSRadius * sphereRadius).x;
-                        if(blackHoleDistance <= _StepSize)
+                        if(blackHoleDistance <= _StepSize) //if ray fell into black hole apply black hole mask
                         {
                             blackHoleMask = 1;
                             break;
                         }
 
                         // Check for disc intersection nearby
-                        float discDst = intersectDisc(currentRayPos, currentRayDir, p1, p2, discDir, discRadius, innerRadius);
-                        if(transmittance < 1 && discDst < _StepSize)
+                        float discDst = intersectDisc(currentRayPos, currentRayDir, p1, p2, discDir, discRadius, innerRadius); //finds distance to the disk if the ray intersects it
+                        if(transmittance < 1 && discDst < _StepSize) //if the ray is cose enough and hasn't already passed through'
                         {
-                            transmittance = 1;
-                            samplePos = currentRayPos + currentRayDir * discDst;
+                            transmittance = 1; //mark that the ray hit the disc (light now passes through)
+                            samplePos = currentRayPos + currentRayDir * discDst; //store the exact hit position on the disc for shading later
                         }
                     }
                 }
 
-                float2 uv = float2(0,0);
-                float3 planarDiscPos = float3(0,0,0);
-                if(samplePos.x < maxFloat)
+                //texturing the disc
+                float2 uv = float2(0,0); //placeholder for UV coords
+                float3 planarDiscPos = float3(0,0,0); //placeholder for hit position on the disc
+                if(samplePos.x < maxFloat) //if the ray actually hit the disc
                 {
-                    planarDiscPos = samplePos - dot(samplePos - IN.centre, discDir) * discDir - IN.centre;
-                    uv = discUV(planarDiscPos, discDir, IN.centre, discRadius);
-                    uv.y += _Time.x * _DiscSpeed;
+                    planarDiscPos = samplePos - dot(samplePos - IN.centre, discDir) * discDir - IN.centre; //project hit point onto tbe disc plane and centre it
+                    uv = discUV(planarDiscPos, discDir, IN.centre, discRadius); //converted projected position into UV coords
+                    uv.y += _Time.x * _DiscSpeed; //scroll UV over time to simulate disc rotation
                 }
-                float texCol = _DiscTex.SampleLevel(sampler_DiscTex, uv * _DiscTex_ST.xy, 0).r;
+                float texCol = _DiscTex.SampleLevel(sampler_DiscTex, uv * _DiscTex_ST.xy, 0).r; // sample texture color (using red channel only because we only need "brightness") at the computed UV
             
-                float2 screenUV = IN.posCS.xy / _ScreenParams.xy;
+                float2 screenUV = IN.posCS.xy / _ScreenParams.xy; // calculate screen-space UV coordinates for this pixel
 
-                // Ray direction projection
+                // Ray direction projection onto screen space (XY plane)
                 float3 distortedRayDir = normalize(currentRayPos - rayOrigin);
                 float4 rayCameraSpace = mul(unity_WorldToCamera, float4(distortedRayDir,0));
                 float4 rayUVProjection = mul(unity_CameraProjection, float4(rayCameraSpace));
                 float2 distortedScreenUV = rayUVProjection.xy + 1 * 0.5;
 
                 // Screen and object edge transitions
-                float edgeFadex = smoothstep(0, 0.25, 1 - abs(remap(screenUV.x, 0, 1, -1, 1)));
-                float edgeFadey = smoothstep(0, 0.25, 1 - abs(remap(screenUV.y, 0, 1, -1, 1)));
-                float t = saturate(remap(outerSphereIntersection.y, sphereRadius, 2 * sphereRadius, 0, 1)) * edgeFadex * edgeFadey;
-                distortedScreenUV = lerp(screenUV, distortedScreenUV, t*0.2);
+                float edgeFadex = smoothstep(0, 0.25, 1 - abs(remap(screenUV.x, 0, 1, -1, 1))); // Fade factor on X axis: 1 at screen center, smoothly falls to 0 near edges
+                float edgeFadey = smoothstep(0, 0.25, 1 - abs(remap(screenUV.y, 0, 1, -1, 1))); // Fade factor on Y axis: 1 at screen center, smoothly falls to 0 near edges
+                float t = saturate(remap(outerSphereIntersection.y, sphereRadius, 2 * sphereRadius, 0, 1)) * edgeFadex * edgeFadey; // Depth-based fade: distortion increases with ray distance
+                distortedScreenUV = lerp(screenUV, distortedScreenUV, t*0.2); // Blend between original and distorted UVs at 20% (0.2)
 
-                float3 backgroundCol = SampleSceneColor(distortedScreenUV) * (1 - blackHoleMask);
+                float3 backgroundCol = SampleSceneColor(distortedScreenUV) * (1 - blackHoleMask); //Show the warped background if we’re outside the event horizon, but if the ray hits the black hole, show nothing (black).
 
-                float3 discCol = discColor(_DiscColor.rgb, planarDiscPos, discDir, _WorldSpaceCameraPos, uv.x, discRadius);
+                float3 discCol = discColor(_DiscColor.rgb, planarDiscPos, discDir, _WorldSpaceCameraPos, uv.x, discRadius); //Compute the final glowing color of the accretion disc at this spot, including distance falloff, Doppler effect, and hue shift.
 
-                transmittance *= texCol * _DiscColor.a;
-                float3 col = lerp(backgroundCol, discCol, transmittance);
-                return float4(col,1);
+                transmittance *= texCol * _DiscColor.a; // Scale transmittance by texture brightness and disc alpha
+                float3 col = lerp(backgroundCol, discCol, transmittance); // Blend between background and disc based on transmittance
+                return float4(col,1); // Final output color (opaque)
 
             }
             ENDHLSL
