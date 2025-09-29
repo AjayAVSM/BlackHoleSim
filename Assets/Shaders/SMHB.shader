@@ -355,8 +355,8 @@ Shader "KelvinvanHoorn/SMBH"
                 float3 discDir = normalize(mul(unity_ObjectToWorld, float4(0,1,0,0)).xyz); //figure out which way the disk is pointing in world space
                 float3 p1 = IN.centre - 0.5 * _DiscWidth * discDir; //cap disk thickness in the bottom
                 float3 p2 = IN.centre + 0.5 * _DiscWidth * discDir; //cap disk thickness in the top
-                float discRadius = sphereRadius * _DiscOuterRadius; //calculates relative outer radius to the sphere
-                float innerRadius = sphereRadius * _DiscInnerRadius; //calculates relative inner radius to the sphere
+                float discRadius = sphereRadius * max(_DiscOuterRadius,0.01); //calculates relative outer radius to the sphere (added minimum limit as 0.01)
+                float innerRadius = sphereRadius * max(_DiscInnerRadius,0.01); //calculates relative inner radius to the sphere (added minimum limit as 0.01)
 
 
                 // Raymarching information
