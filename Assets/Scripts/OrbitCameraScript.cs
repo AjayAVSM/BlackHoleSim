@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class OrbitCamera : MonoBehaviour
 {
@@ -37,17 +38,18 @@ public class OrbitCamera : MonoBehaviour
             return;
         }
 
-        //Vector3 angles = transform.eulerAngles;
-        //x = angles.y;
-        //y = angles.x;
-        x = 0f;          // facing forward (can set another if you want yaw offset)
-        y = 5.0f;       // starting tilt upwards
+        x = 0f;    // yaw
+        y = 5f;    // tilt
         currentDistance = distance;
     }
 
     void LateUpdate()
     {
         if (target == null) return;
+
+        // --- Block input if UI is focused ---
+        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
+            return;
 
         // --- Rotation: mouse drag ---
         if (Input.GetMouseButton(0))
