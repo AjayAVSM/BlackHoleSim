@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54ceced1b38ce34459743ae76426d7d9, type: 3}
+  m_Name: Accretion
+  m_EditorClassIdentifier: Assembly-CSharp::EncyclopediaEntry
+  title: Accretion
+  description: Accretion is the process where matter falls onto a massive object
+    due to gravity. Around black holes, this matter forms a swirling disk of gas
+    and dust called an accretion disk. As the material spirals inward, it heats up
+    and glows brightly, often outshining the entire galaxy around it. This process
+    powers some of the brightest objects in the universe, known as quasars. Studying
+    accretion helps us understand how black holes grow and how they affect their
+    surroundings.
+  tryItOutDescription: In the real photo of the young star "HL Tauri" you can see
+    a massive collection of glowing gas and dust swirling around the gravitational
+    source. In the simulation you can witness this phenomenon by increasing the Accretion
+    Rate slider. Notice how the centre glows brighter than the outer edges.
+  formulaTitle: 'Mass Accretion Rate Formula:'
+  formulaImage: {fileID: 21300000, guid: df5a7c704c929ab4ca286d6256c445fd, type: 3}
+  realImage: {fileID: 21300000, guid: d055df2a9b5e5d84ca57d81838a7c8b3, type: 3}
+  simImage: {fileID: 21300000, guid: a6882291706bccf4c91cc924fbc9bcdf, type: 3}

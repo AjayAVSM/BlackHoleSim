@@ -6,6 +6,7 @@ public class UIManager : MonoBehaviour
 {
     public GameObject pauseUI;
     public GameObject slidersUI;
+    public GameObject encyclopaediaUI;
     public Image settingsButtonIcon;
     public Image encyclopaediaButtonIcon;
     public Image sliderButtonIcon;
@@ -37,6 +38,24 @@ public class UIManager : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void OnEncyclopaediaPress()
+    {
+        if (encyclopaediaUI.activeSelf)
+        {
+            encyclopaediaUI.SetActive(false);
+            encyclopaediaButtonIcon.color = normalColor;
+            Time.timeScale = 1f;
+        }
+        else
+        {
+            encyclopaediaUI.SetActive(true);
+            encyclopaediaButtonIcon.color = activeColor;
+            Time.timeScale = 0f;
+        }
+
+    }
+
     public void OnSliderPress()
     {
         if (slidersUI.activeSelf)

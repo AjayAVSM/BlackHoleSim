@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54ceced1b38ce34459743ae76426d7d9, type: 3}
+  m_Name: DopplerEffect
+  m_EditorClassIdentifier: Assembly-CSharp::EncyclopaediaEntry
+  title: Doppler Effect
+  description: The Doppler Effect is the change in the observed frequency of light
+    caused by the motion of the source relative to the observer. In an accretion
+    disk, material moving toward us appears brighter and shifted toward blue light,
+    while material moving away appears dimmer and shifted toward red light. This
+    effect helps astronomers measure the speed and behavior of matter around black
+    holes and other cosmic objects.
+  tryItOutDescription: The real image shows the black hole at the centre of the Messier
+    87 galaxy more than 50 million light years away. You can notice how one side
+    is much brighter than the other due to the relativistic doppler effect. You can
+    try this out in the simulator by increasing the Orbital Velocity Slider, as the
+    formula implies a propotional increase in the effect with increase in velocity.
+  formulaTitle: 'Relativistic Doppler Effect Formula:'
+  formulaImage: {fileID: 21300000, guid: 20457db7dbf1e414bbc318687b2129fb, type: 3}
+  realImage: {fileID: 21300000, guid: 3d98bbefe4a53084c9791f94e252c25e, type: 3}
+  simImage: {fileID: 21300000, guid: 317627a0be0390d48bd0bef92baffbaa, type: 3}
