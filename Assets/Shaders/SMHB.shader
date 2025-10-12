@@ -21,6 +21,7 @@ Shader "KelvinvanHoorn/SMBH"
         _StepSize ("Step size", Range(0.001, 1)) = 0.1
         _SSRadius ("Object relative Schwarzschild radius", Range(0,1)) = 0.2
         _GConst ("Gravitational constant", float) = 0.15
+        _Temperature ("Disc temperature (0=Red, 0.5=White, 1=Blue)", Range(0,1)) = 0
 
     }
     SubShader //defines how Unity renders the black hole
@@ -82,6 +83,7 @@ Shader "KelvinvanHoorn/SMBH"
             float4 _DiscTex_ST;
             float _DiscSpeed;
             float4 _DiscColor;
+            float _Temperature;
             float _DopplerBeamingFactor;
             float _HueRadius;
             float _HueShiftFactor;
@@ -317,10 +319,26 @@ Shader "KelvinvanHoorn/SMBH"
                 return mul(rot_mat,  In);
             }
 
+            // Helper function to handle temperature based colour switching
+            float3 TemperatureToColor(float t)
+            {
+                float3 lowcolor = float3(190.0/255, 50.0/255.0, 0.0/255.0);
+                float3 midcolor = float3(130.0/255.0, 80.0/255.0, 60.0/255.0);
+                float3 highcolor = float3(10.0/255.0, 30.0/255.0, 180.0/255.0);
+
+                if (t < 0.5)
+                    return lerp(lowcolor, midcolor, t * 2.0);
+                else
+                    return lerp(midcolor, highcolor, (t - 0.5) * 2.0);
+            }
+
+
             // Function to give effects to the accretion disk
             float3 discColor(float3 baseColor, float3 planarDiscPos, float3 discDir, float3 cameraPos, float u, float radius)
             {
-                float3 newColor = baseColor;
+                // Apply temperature tint
+                float3 tempColor = TemperatureToColor(_Temperature);
+                float3 newColor = baseColor * tempColor; // tint base color by temperature
 
                 // Distance intensity fall-off
                 float intensity = remap(u, 0, 1, 0.5, -1.2);
@@ -331,7 +349,9 @@ Shader "KelvinvanHoorn/SMBH"
                 float dopplerDistance = (length(rotatePos - cameraPos) - length(planarDiscPos - cameraPos)) / radius;
                 intensity += dopplerDistance * _DiscSpeed * _DopplerBeamingFactor;
 
-                newColor = hdrIntensity(baseColor, intensity);
+                // Apply intensity to *tinted* color and slightly boost intensity for hotter temperatures (white/blue)
+                float tempBoost = lerp(0.0, 0.6, _Temperature); 
+                newColor = hdrIntensity(newColor, intensity + tempBoost);
 
                 // Distance hue shift
                 float3 hueColor = RGBToHSV(newColor);
