@@ -13,21 +13,24 @@ MonoBehaviour:
   m_Name: EinstienRings
   m_EditorClassIdentifier: Assembly-CSharp::EncyclopaediaEntry
   title: Einstein Ring
-  description: "An Einstein Ring is a special case of gravitational lensing, where
+  description: 'An Einstein Ring is a special case of gravitational lensing, where
     the light from a distant galaxy or star is bent by the gravity of a massive object,
     like a black hole, lying directly between it and us. When the alignment is nearly
     perfect, the bent light forms a full circle around the massive object, which
-    we see as a glowing ring.\n\nEinstein Rings are not just visually striking \u2014
+    we see as a glowing ring.
+
+
+    Einstein Rings are not just visually striking,
     they are powerful tools in astrophysics. By measuring the size of the ring, scientists
     can estimate the mass of the lensing object and the distances involved. This
     makes them important in studying dark matter, black holes, and even the large-scale
-    structure of the universe."
-  tryItOutDescription: The real image shows a Luminous Red Galaxy lensing the light
+    structure of the universe.'
+  tryItOutDescription: "The real image shows a Luminous Red Galaxy lensing the light
     of a more distant Blue Galaxy forming an Einstien Ring. Similarly in the Simulation
-    the black hole lenses the light of a  star cluster in the background. You can
-    try out this phenomenon by setting accretion rate to 0 and aligning the camera
-    with a bright object in the background.
-  formulaTitle: 'Lensing Equation:'
-  formulaImage: {fileID: 21300000, guid: eefce2cfcf7d01a488864b0f3600cbfc, type: 3}
+    the black hole lenses the light of a  star cluster in the background. \n\nYou
+    can try out this phenomenon by setting accretion rate to 0 and aligning the camera
+    with a bright object in the background."
+  formulaTitle: 'Einstien Ring Diagram:'
+  formulaImage: {fileID: 21300000, guid: 63f4e9b5ae015be42bae075e8fa9d0c2, type: 3}
   realImage: {fileID: 21300000, guid: 35c6bbdcd5da30b49a2e31deb82a9340, type: 3}
   simImage: {fileID: 21300000, guid: d8467566981511540b0decebb3f983c5, type: 3}

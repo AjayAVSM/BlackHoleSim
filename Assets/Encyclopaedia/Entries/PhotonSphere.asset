@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54ceced1b38ce34459743ae76426d7d9, type: 3}
+  m_Name: PhotonSphere
+  m_EditorClassIdentifier: Assembly-CSharp::EncyclopaediaEntry
+  title: Photon Ring
+  description: "Near the event horizon, gravity becomes so extreme that light itself
+    can be trapped in orbit around the black hole. This creates a razor-thin structure
+    called the photon ring. It isn\u2019t part of the accretion disk \u2014 it\u2019s
+    literally made of photons whipping around the black hole at nearly the speed
+    of light. Because this region is where spacetime distortion is at its most chaotic,
+    even tiny changes in angle send light spiraling inward or flinging outward into
+    the universe.\n\nThe photon ring is incredibly bright and sharp compared to the
+    rest of the disk. Most of the light we see doesn\u2019t even come from gas at
+    that exact spot \u2014 it\u2019s light from the accretion disk behind the black
+    hole, bent back toward us like a gravitational boomerang. You\u2019re basically
+    staring at the universe being folded in on itself by gravity."
+  tryItOutDescription: "Visually, the photon ring appears as a thin inner halo \u2014
+    the closest \u201Cedge\u201D of the black hole that we can actually see. It outlines
+    the pitch-black event horizon and creates the iconic glowing border that most
+    people think of when they picture a black hole. \n\nThe simulation generates
+    this effect using a strong gravitational lensing approximation near the center.
+    As rays approach the black hole, the shader warps their paths to create a concentrated
+    ring of brightness where light would realistically orbit before escaping, giving
+    users a direct way to visualize the threshold between visible physics and the
+    point of no return."
+  formulaTitle: 
+  formulaImage: {fileID: 0}
+  realImage: {fileID: 21300000, guid: 4118bf040d6b231429996038f848016b, type: 3}
+  simImage: {fileID: 21300000, guid: 38d2a4543eafc66469b505c0e03aa375, type: 3}

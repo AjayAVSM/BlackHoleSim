@@ -8,7 +8,7 @@ public class SlidersScript : MonoBehaviour
     public Slider accretionRateSlider;
     public Slider diskVelocitySlider;
     public Slider temperatureSlider;
-
+    public Slider shearIntensitySlider;
     private Material blackHoleMat;
 
     void Start()
@@ -31,8 +31,16 @@ public class SlidersScript : MonoBehaviour
         temperatureSlider.onValueChanged.AddListener(SetTemperature); // connect event
         temperatureSlider.minValue = 0f;
         temperatureSlider.maxValue = 1f;
-        temperatureSlider.value = 0f; // yellow by default
+        temperatureSlider.value = 0.5f; // white by default
         SetTemperature(temperatureSlider.value); // initialize
+
+        // --- Shear Intensity ---
+        shearIntensitySlider.onValueChanged.AddListener(SetShearIntensity);
+        shearIntensitySlider.minValue = 0f;
+        shearIntensitySlider.maxValue = 0.9f;
+        shearIntensitySlider.value = 0.45f;
+        SetShearIntensity(shearIntensitySlider.value);
+
     }
 
     void SetAccretionRate(float value)
@@ -49,5 +57,11 @@ public class SlidersScript : MonoBehaviour
     {
         blackHoleMat.SetFloat("_Temperature", value);
     }
+
+    void SetShearIntensity(float value)
+    {
+        blackHoleMat.SetFloat("_HueRadius", value);
+    }
+
 }
 

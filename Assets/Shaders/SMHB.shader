@@ -1,4 +1,4 @@
-// Fragment shader for black hole visualization.
+ï»¿// Fragment shader for black hole visualization.
 // Simulates gravitational lensing by raymarching through a warped sphere,
 // samples and colors the accretion disc texture with Doppler + hue shifts,
 // blends distorted background with disc color, and masks the black hole core.
@@ -26,7 +26,7 @@ Shader "KelvinvanHoorn/SMBH"
     }
     SubShader //defines how Unity renders the black hole
     {
-        Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalRenderPipeline" "Queue" = "Transparent" } //Explains it's a transparent object, works with URP and should be drawn in transparent rendering queue
+        Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent" } //Explains it's a transparent object, works with URP and should be drawn in transparent rendering queue
         Cull Front //renders inside (back) of the sphere instead of front
 
         Pass //Defines one rendering pass (one drawing step the GPU does)
@@ -94,12 +94,12 @@ Shader "KelvinvanHoorn/SMBH"
 
             // ---------- Geometry Intersection Helpers ----------
             // These functions shoot a ray at idealized shapes and return where (if at all) they intersect.
-            // They don’t draw anything by themselves — they’re just math tools for the fragment shader.
+            // They donâ€™t draw anything by themselves â€” theyâ€™re just math tools for the fragment shader.
             // Why we have each:
             //   Sphere   -> black hole event horizon (solid sphere)
             //   Plane    -> reference plane (e.g. accretion disk base)
             //   Cylinder -> vertical walls (used with disks to give the accretion disk thickness)
-            //   Disk     -> flat finite ring (accretion disk’s main glowing surface)
+            //   Disk     -> flat finite ring (accretion diskâ€™s main glowing surface)
 
             //Function to intersect the sphere - black hole event horizon
             float2 intersectSphere(float3 rayOrigin, float3 rayDir, float3 centre, float radius) {
@@ -368,7 +368,7 @@ Shader "KelvinvanHoorn/SMBH"
                 float3 rayOrigin = _WorldSpaceCameraPos; // Set Ray's Origin as the camera position'
                 float3 rayDir = normalize(IN.posWS - _WorldSpaceCameraPos); // Set Ray direction as from camera to current pixel's world position'
             
-                float sphereRadius = 0.5 * min(min(IN.objectScale.x, IN.objectScale.y), IN.objectScale.z); //takes the object’s scale in X, Y, Z, picks the smallest (so it’s still round), halves it (radius).
+                float sphereRadius = 0.5 * min(min(IN.objectScale.x, IN.objectScale.y), IN.objectScale.z); //takes the objectâ€™s scale in X, Y, Z, picks the smallest (so itâ€™s still round), halves it (radius).
                 float2 outerSphereIntersection = intersectSphere(rayOrigin, rayDir, IN.centre, sphereRadius); //Calls intersectSphere to check if the ray hits the black hole sphere and where?
 
                 // Disc information, direction is objects rotation
@@ -447,7 +447,7 @@ Shader "KelvinvanHoorn/SMBH"
                 float t = saturate(remap(outerSphereIntersection.y, sphereRadius, 2 * sphereRadius, 0, 1)) * edgeFadex * edgeFadey; // Depth-based fade: distortion increases with ray distance
                 distortedScreenUV = lerp(screenUV, distortedScreenUV, t*0.2); // Blend between original and distorted UVs at 20% (0.2)
 
-                float3 backgroundCol = SampleSceneColor(distortedScreenUV) * (1 - blackHoleMask); //Show the warped background if we’re outside the event horizon, but if the ray hits the black hole, show nothing (black).
+                float3 backgroundCol = SampleSceneColor(distortedScreenUV) * (1 - blackHoleMask); //Show the warped background if weâ€™re outside the event horizon, but if the ray hits the black hole, show nothing (black).
 
                 float3 discCol = discColor(_DiscColor.rgb, planarDiscPos, discDir, _WorldSpaceCameraPos, uv.x, discRadius); //Compute the final glowing color of the accretion disc at this spot, including distance falloff, Doppler effect, and hue shift.
 

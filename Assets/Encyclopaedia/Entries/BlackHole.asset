@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54ceced1b38ce34459743ae76426d7d9, type: 3}
+  m_Name: BlackHole
+  m_EditorClassIdentifier: Assembly-CSharp::EncyclopaediaEntry
+  title: Black Hole
+  description: "A black hole forms when a massive star collapses under its own gravity,
+    compressing all its mass into an incredibly tiny point called the singularity.
+    The gravity becomes so strong that beyond a certain boundary, the \"event horizon\"
+    escape becomes impossible. Not even light can get out. That\u2019s why black
+    holes look \u201Cblack.\u201D Anything that crosses the event horizon is gone
+    forever, doomed to spiral inward and stretch into atoms, however Black holes
+    are not cosmic vacuum cleaners sucking everything in, you can safely orbit one
+    from far enough away just like any massive object.\n\nBut black holes rarely
+    sit quietly. Gas, dust, and sometimes unlucky stars swirl toward them at extreme
+    speeds, forming a spinning accretion disk. The friction and collisions inside
+    this disk heat it to unbelievable temperatures, making it glow bright enough
+    to be seen across galaxies. The faster the gas orbits, the hotter and brighter
+    it gets, especially near the center. That\u2019s why black holes are often surrounded
+    by beautiful, deadly light."
+  tryItOutDescription: "Light near a black hole doesn\u2019t travel in straight lines.
+    Gravity warps spacetime, bending light into curves. This makes the flat accretion
+    disk appear as a glowing halo above and below the black hole \u2014 a weird optical
+    illusion caused by relativistic lensing. The inner disk is much brighter because
+    orbits accelerate dramatically as material spirals inward, radiating more energy.\n\nThe
+    simulation recreates these effects using ray-marching techniques to approximate
+    how light bends around the black hole, along with simplified relativistic behavior
+    for the spinning accretion disk."
+  formulaTitle: 
+  formulaImage: {fileID: 0}
+  realImage: {fileID: 21300000, guid: 587f8eae7b828f04ebbdcb9acc6cdf28, type: 3}
+  simImage: {fileID: 21300000, guid: 5aa6867945a4bb24c95d3b5fd2fad98d, type: 3}

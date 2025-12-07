@@ -13,18 +13,21 @@ MonoBehaviour:
   m_Name: Accretion
   m_EditorClassIdentifier: Assembly-CSharp::EncyclopediaEntry
   title: Accretion
-  description: Accretion is the process where matter falls onto a massive object
+  description: "Accretion is the process where matter falls onto a massive object
     due to gravity. Around black holes, this matter forms a swirling disk of gas
-    and dust called an accretion disk. As the material spirals inward, it heats up
-    and glows brightly, often outshining the entire galaxy around it. This process
+    and dust called an accretion disk. \n\nAs the material spirals inward, it heats
+    up and glows brightly, often outshining the entire galaxy around it. This process
     powers some of the brightest objects in the universe, known as quasars. Studying
     accretion helps us understand how black holes grow and how they affect their
-    surroundings.
-  tryItOutDescription: In the real photo of the young star "HL Tauri" you can see
-    a massive collection of glowing gas and dust swirling around the gravitational
-    source. In the simulation you can witness this phenomenon by increasing the Accretion
-    Rate slider. Notice how the centre glows brighter than the outer edges.
-  formulaTitle: 'Mass Accretion Rate Formula:'
-  formulaImage: {fileID: 21300000, guid: df5a7c704c929ab4ca286d6256c445fd, type: 3}
-  realImage: {fileID: 21300000, guid: d055df2a9b5e5d84ca57d81838a7c8b3, type: 3}
-  simImage: {fileID: 21300000, guid: a6882291706bccf4c91cc924fbc9bcdf, type: 3}
+    surroundings."
+  tryItOutDescription: "In NASA\u2019s SVS renders of black holes, a bright disk
+    of super-heated gas and dust forms around the central object as material falls
+    inward under strong gravitational forces. Friction and compression cause the
+    disk to heat up, making the inner regions much hotter and brighter than the outer
+    areas.\n\nIn this simulation, increasing the Accretion Rate adds more material
+    to the disk. As the disk becomes denser and hotter, the brightness near the center
+    increases noticeably \u2014 similar to what is shown in NASA\u2019s visualizations."
+  formulaTitle: 'Accretion Disk Trajectory Diagram:'
+  formulaImage: {fileID: 21300000, guid: 4fbf4f979fe3cf049aa3f2fe0e3fc9cd, type: 3}
+  realImage: {fileID: 21300000, guid: 211741b06ec670049b4b02c9921e7fb6, type: 3}
+  simImage: {fileID: 21300000, guid: 71474b4a8df618a4ca2b92222c818e57, type: 3}
